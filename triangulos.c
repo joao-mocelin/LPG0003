@@ -6,7 +6,7 @@
 #include <stdio.h>
 int main(){
     int a,b,c;
-    printf("\nInsira os valores de cada lado do triangulo: ");
+    printf("\nInsira os valores de cada lado do triangulo (ex: 1 2 3) \n");
     scanf("%d %d %d",&a,&b,&c);
     if((a == b) && (b == c)){
         printf("\nO triangulo e equilatero");
