@@ -20,9 +20,3 @@ int main(){
     printf("\n pi = %f",pi);
     return 0;
 }
-/*
-nao sei por que, porem com 471755 termos a serie tem precisão, mas quando usamos 471756 termos a precisao se perde (mesmo se usar double).
-471755 termos -> pi = 3.141911
-471756 termos -> pi = 3.391911
-*/
-
