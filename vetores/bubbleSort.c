@@ -1,25 +1,46 @@
+//Bubble sort
+//Compara elementos adjacentes e troca-os 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-int main(){
-    int v[10] = {9,2,3,4,6,1,7,8,10,5};
-    int aux;
-    
-    for(int i = 0; i < 10 - 1; i++){
-        int swap = 0;
-        for(int j = 0; j < 10 - i - 1; j++){
-            if(v[j] > v[j+1]){
-                aux = v[j+1];
-                v[j+1] = v[j];
-                v[j] = aux;
-                swap = 1;
-            }
+void vRand(int *v, int tam){
+    for(int i = 0; i < tam; i++){
+        v[i] = rand() % 9 + 1;
+    }
+}
+
+void vPrint(int *v, int tam){
+    for(int i = 0; i < tam; i++){
+        printf("\n [%d] = %d",i,v[i]);
+    }
+}
+
+void bubbleSort(int *v, int tam){
+    int aux, swap = 0;
+    for(int i = 0; i < tam; i++){
+        for(int j = i + 1; j < tam; j++){
+            if(v[i] > v[j]){
+            aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+            swap = 1;
+        }
         }
         if(swap == 0){
             break;
         }
     }
-    for(int i = 0; i < 10; i++){
-        printf("\n %d",v[i]);
-    }
+} 
+
+int main(){
+    srand(time(NULL));
+    int v[10];
+    vRand(v,10);
+    printf("\n Vetor nao ordenado: \n");
+    vPrint(v,10);
+    bubbleSort(v,10);
+    printf("\n Vetor ordenado: \n");
+    vPrint(v,10);
     return 0;
 }

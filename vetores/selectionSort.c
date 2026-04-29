@@ -1,24 +1,43 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-int main(){
-    int v[10] = {1,2,3,4,5,6,7,8,9,10};
-    int aux, temp;
-    for (int i = 0; i < 10; i++)
-    {
-        aux = i;
-        for(int j = i+1;j<10;j++){
-            if(v[j] > v[aux]){
-                aux = j;
+void vRand(int *v, int tam){
+    for(int i = 0; i < tam; i++){
+        v[i] = rand() % 9 + 1;
+    }
+}
+
+void vPrint(int *v, int tam){
+    for(int i = 0; i < tam; i++){
+        printf("\n [%d] = %d",i,v[i]);
+    }
+}
+
+
+void selectionSort(int *v, int tam){
+    int aux, index;
+    for(int i = 0; i < tam; i++){
+        index = i;
+        for(int j = i+1; j < tam; j++){
+            if(v[j] < v[index]){
+                index = j;
             }
         }
-        temp = v[i];
-        v[i] = v[aux];
-        v[aux] = temp;
+        aux = v[i];
+        v[i] = v[index];
+        v[index] = aux;
     }
-    for (int i = 0; i < 10; i++)
-    {
-        printf("\n %d",v[i]);
-    }
-    
+}
+
+int main(){
+    srand(time(NULL));
+    int v[10];
+    vRand(v,10);
+    printf("\n Vetor nao ordenado: \n");
+    vPrint(v,10);
+    selectionSort(v,10);
+    printf("\n Vetor ordenado: \n");
+    vPrint(v,10);
     return 0;
 }
