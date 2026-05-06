@@ -1,21 +1,23 @@
 #include <stdio.h>
+#include <string.h>
 
-int strlen(char *str){ //retorna o tamanho de uma string
-    cont = 0;
+int len(char *str){ //retorna o tamanho de uma string
+    int cont = 0;
     for(int i = 0; str[i] != '\0'; i++){
         cont += 1;
     }
     return cont;
 }
 
-void strcpy(char *str1, char *str2){//copia o conteúdo de uma string para outra
-    for(int i = 0; str1[i] != '\0'; i++){
+void cpy(char *str1, char *str2){//copia o conteúdo de uma string para outra
+    int i = 0;
+    for(i = 0; str1[i] != '\0'; i++){
         str2[i] = str1[i];
     }
     str2[i] = '\0';
 }
 
-int strcmp(char *str1, char *str2){//compara duas strings e retorna 1 se forem iguais
+int cmp(char *str1, char *str2){//compara duas strings e retorna 1 se forem iguais
     if(strlen(str1) != strlen(str2)){
         return 0;
     }
@@ -32,13 +34,23 @@ int strcmp(char *str1, char *str2){//compara duas strings e retorna 1 se forem i
     }
 }
 
-
+void cat(char *str1, char *str2){//concatena duas strings
+    int i;
+    for(i = strlen(str1); i < strlen(str2); i++){
+        str1[i] = str2[i-strlen(str2)];
+    }
+    str1[i] = '\0';
+}
 
 
 
 int main(){
-    char nome[10];
-    scanf("%s",nome);
+    char nome[99], nome2[99];
+    fgets(nome,99,stdin);
+    printf("\n %s",nome);
+    fgets(nome,99,stdin);
+    printf("\n %s",nome2);
+    strcat(nome,nome2);
     printf("\n %s",nome);
     return 0;
 }
