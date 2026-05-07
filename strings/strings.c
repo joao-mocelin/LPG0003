@@ -47,10 +47,8 @@ void cat(char *str1, char *str2){//concatena duas strings
 int main(){
     char nome[99], nome2[99];
     fgets(nome,99,stdin);
-    printf("\n %s",nome);
-    fgets(nome,99,stdin);
-    printf("\n %s",nome2);
+    fgets(nome2,99,stdin);
     strcat(nome,nome2);
-    printf("\n %s",nome);
+    printf("\n%s",nome);
     return 0;
 }

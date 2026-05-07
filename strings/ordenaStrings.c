@@ -12,15 +12,13 @@ void printList(char list[N][MAX]){
 }
 
 void sortList(char list[N][MAX]){
-    int temp;
     for (int i = 0; i < N; i++){
         for(int j = i + 1; j < N; j++){
-            if(strcasecmp(list[i],list[j]) > 0){ //strcasecmp isnt case sensitive.
-                temp = j;
+            if(strcasecmp(list[i],list[j]) > 0){ //strcasecmp isn't case sensitive.
                 char aux[MAX];
                 strcpy(aux, list[i]);
-                strcpy(list[i], list[temp]);
-                strcpy(list[temp],aux);
+                strcpy(list[i], list[j]);
+                strcpy(list[j],aux);
             }
         }
     }
