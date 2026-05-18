@@ -74,6 +74,16 @@ void buscaMatriz(int mat[M][N], int key){
     }
 }
 
+void removeConj(int mat[M][N], int index){
+    for(int i = index; i < M-1; i++){  
+        for(int j = 0; j < N; j++){
+        mat[i][j] = mat[i+1][j];
+        }
+    }
+    for(int i = 0; i < N; i++){
+        mat[M-1][i] = 0;
+        }
+}
 
 int main(){
     int matriz[M][N] = {0};
@@ -82,15 +92,15 @@ int main(){
     while(option != 9){
         printf("\n\n\tGerenciamento de Conjuntos (%d/%d)\n",quantConjuntos,M);
         printf("\nMenu\n");
-        printf("\n1-Criar novo conjunto vazio.");
-        printf("\n2-Inserir dados em um conjunto.");
-        printf("\n3-Remover um conjunto.");
-        printf("\n4-Fazer a uniao entre dois conjuntos.");
-        printf("\n5-Fazer a interseccao entre dois conjuntos.");
-        printf("\n6-Mostrar um conjunto.");
-        printf("\n7-Mostrar todos os conjuntos.");
-        printf("\n8-Fazer busca por um valor.");
-        printf("\n9-Sair do programa.\n");
+        printf("\n1) Criar novo conjunto vazio.");
+        printf("\n2) Inserir dados em um conjunto.");
+        printf("\n3) Remover um conjunto.");
+        printf("\n4) Fazer a uniao entre dois conjuntos.");
+        printf("\n5) Fazer a interseccao entre dois conjuntos.");
+        printf("\n6) Mostrar um conjunto.");
+        printf("\n7) Mostrar todos os conjuntos.");
+        printf("\n8) Fazer busca por um valor.");
+        printf("\n9) Sair do programa.\n");
         printf("\nEscolha uma opcao: ");
         scanf("%d",&option);
         switch (option)
@@ -124,7 +134,24 @@ int main(){
             break;
 
         case 3 : //remover um conjunto
-            
+            if(quantConjuntos <= 0){
+                printf("\nNao ha conjuntos para serem removidos");
+                break;
+            }
+            select = -1;
+            while(select < 0 || select > (quantConjuntos - 1)){
+                printf("\nEscolha o conjunto a ser removido: (");
+                for(int i = 0; i < quantConjuntos; i++){
+                    printf("%d,",i);
+                }
+                printf(") ");
+                scanf("%d",&select);
+                if(select < 0 || select > (quantConjuntos - 1)){
+                    printf("\nConjunto invalido.");
+                }
+            }
+            quantConjuntos--;
+            removeConj(matriz,select);
             break;
 
         case 4 : //fazer a uniao de conjuntos
