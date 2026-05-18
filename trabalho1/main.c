@@ -1,9 +1,36 @@
 #include <stdio.h>
 
-#define M 3 //N° de conjuntos
-#define N 5 //N° de valores por conjunto
+#define M 8 //N° de conjuntos
+#define N 10 //N° de valores por conjunto
 
-int isElement(int mat[M][N],int index, int element){
+void bubbleSort(int mat[M][N], int indice) { 
+    int aux, swap;
+    
+    for(int i = 0; i < N - 1; i++) {
+        swap = 0; 
+        
+        for(int j = 0; j < N - 1 - i; j++) {
+            
+            if (mat[indice][j] == 0 && mat[indice][j + 1] != 0) {
+                aux = mat[indice][j];
+                mat[indice][j] = mat[indice][j + 1];
+                mat[indice][j + 1] = aux;
+                swap = 1;
+            }
+            else if (mat[indice][j] > mat[indice][j + 1] && mat[indice][j + 1] != 0 && mat[indice][j] != 0) {
+                aux = mat[indice][j];
+                mat[indice][j] = mat[indice][j + 1];
+                mat[indice][j + 1] = aux;
+                swap = 1;
+            }
+        }
+        if(swap == 0) {
+            break;
+        }
+    }
+}
+
+int isElement(int mat[M][N],int index, int element){ // Recebe a matriz, Linha e elemento a ser buscado na linha. Retorna 1 caso contenha o elemento e retorna 0 caso contrário.
     for(int j = 0; j < N && mat[index][j] != 0; j++){
         if(mat[index][j] == element){
             return 1;
@@ -40,36 +67,38 @@ void insertData(int mat[M][N], int index){
     }
 }
 
+void mostraConjunto(int mat[M][N], int conjunto){
+    if(mat[conjunto][0] == 0){
+        printf("Vazio");
+        return;
+    }
+    for(int j = 0; j < N && mat[conjunto][j] != 0; j++){
+        printf("%d ",mat[conjunto][j]);
+    }
+}
+
 void mostraTodos(int mat[M][N], int conj){
     for (int i = 0; i < conj; i++)
     {
-        printf("\nConjunto %d:",i);
-        for(int j = 0; j < N; j++){
-            printf(" %d",mat[i][j]);
-        }
+        printf("\nConjunto %d -> ",i);
+        mostraConjunto(mat,i);
         printf("\n");
     }
 }
 
-void mostraConjunto(int mat[M][N], int conjunto){
-    for(int j = 0; j < N; j++){
-        printf(" %d",mat[conjunto][j]);
-    }
-}
-
 void buscaMatriz(int mat[M][N], int key){
-    int bool = 0;
+    int found = 0;
     printf("\nConjuntos que contem o valor %d:",key);
     for(int i = 0; i < M; i++){
         for(int j = 0; j < N && mat[i][j] != 0; j++){
             if(mat[i][j] == key){
                 printf("\nConjunto %d -> ",i);
                 mostraConjunto(mat,i);
-                bool = 1;
+                found = 1;
             }
         }
     }
-    if(bool == 0){
+    if(found == 0){
         printf("\nNenhum conjunto contem a chave %d.",key);
     }
 }
@@ -85,10 +114,49 @@ void removeConj(int mat[M][N], int index){
         }
 }
 
+void uniaoM(int mat[M][N], int conj1, int conj2, int conjUniao){
+    int i;
+    for(i = 0; i < N && mat[conj1][i] != 0; i++)
+    {
+        mat[conjUniao][i] = mat[conj1][i];
+    }
+    int j = i;
+    for(i = 0; i < N && mat[conj2][i] != 0; i++)
+    {
+        if(isElement(mat,conjUniao,mat[conj2][i]) == 0){
+            if(j >= N){
+            printf("\nERRO, uniao finalizada pois acabou o espaco no conjunto uniao!");
+            return;
+        }
+            mat[conjUniao][j] = mat[conj2][i];
+            j++;
+        }
+    }
+    for(int k = j; k < N; k++) {
+        mat[conjUniao][k] = 0;
+    }
+}
+
+void intersecM(int mat[M][N], int conj1, int conj2, int conjIntersec){
+    int i;
+    int j = 0;
+    for(i = 0; i < N && mat[conj1][i] != 0; i++)
+    {
+        if(isElement(mat,conj2,mat[conj1][i]) == 1){
+            mat[conjIntersec][j] = mat[conj1][i];
+            j++;
+        }
+    }
+    for(int k = j; k < N; k++) {
+        mat[conjIntersec][k] = 0;
+    }
+}
+
 int main(){
     int matriz[M][N] = {0};
     int quantConjuntos = 0;
     int option = -1;
+    int select, select2, free;
     while(option != 9){
         printf("\n\n\tGerenciamento de Conjuntos (%d/%d)\n",quantConjuntos,M);
         printf("\nMenu\n");
@@ -118,7 +186,7 @@ int main(){
                 printf("\nNao ha conjuntos para inserir dados");
                 break;
             }
-            int select = -1;
+            select = -1;
             while(select < 0 || select > (quantConjuntos - 1)){
                 printf("\nEscolha o conjunto a ser inserido os dados: (");
                 for(int i = 0; i < quantConjuntos; i++){
@@ -155,11 +223,83 @@ int main(){
             break;
 
         case 4 : //fazer a uniao de conjuntos
-            
+            if(quantConjuntos <= 1){
+                printf("\nNao ha conjuntos para serem unidos.");
+                break;
+            }
+            if(quantConjuntos >= M){
+                printf("\nNumero maximo de conjuntos atingido.");
+                break;
+            }
+            select = -1;
+            while(select < 0 || select > (quantConjuntos - 1)){
+                printf("\nEscolha o conjunto 1 a ser feita a uniao: (");
+                for(int i = 0; i < quantConjuntos; i++){
+                    printf("%d,",i);
+                }
+                printf(") ");
+                scanf("%d",&select);
+                if(select < 0 || select > (quantConjuntos - 1)){
+                    printf("\nConjunto invalido.");
+                }
+            }
+            select2 = -1;
+            while(select2 < 0 || select2 > (quantConjuntos - 1)){
+                printf("\nEscolha o conjunto 2 a ser feita a uniao: (");
+                for(int i = 0; i < quantConjuntos; i++){
+                    printf("%d,",i);
+                }
+                printf(") ");
+                scanf("%d",&select2);
+                if(select2 < 0 || select2 > (quantConjuntos - 1)){
+                    printf("\nConjunto invalido.");
+                }
+            }
+            free = quantConjuntos;
+            quantConjuntos++;
+            uniaoM(matriz, select, select2, free);
+            bubbleSort(matriz,free);
+            printf("\nO novo conjunto foi criado na posicao %d",free);
             break;
 
         case 5 : //fazer a intersecção de conjuntos
-            
+            if(quantConjuntos <= 1){
+                printf("\nNao ha conjuntos para ser feita a interseccao.");
+                break;
+            }
+            if(quantConjuntos >= M){
+                printf("\nNumero maximo de conjuntos atingido.");
+                break;
+            }
+            select = -1;
+            while(select < 0 || select > (quantConjuntos - 1)){
+                printf("\nEscolha o conjunto 1 a ser feita a interseccao: (");
+                for(int i = 0; i < quantConjuntos; i++){
+                    printf("%d,",i);
+                }
+                printf(") ");
+                scanf("%d",&select);
+                if(select < 0 || select > (quantConjuntos - 1)){
+                    printf("\nConjunto invalido.");
+                }
+            }
+            select2 = -1;
+            while(select2 < 0 || select2 > (quantConjuntos - 1)){
+                printf("\nEscolha o conjunto 2 a ser feita a interseccao: (");
+                for(int i = 0; i < quantConjuntos; i++){
+                    printf("%d,",i);
+                }
+                printf(") ");
+                scanf("%d",&select2);
+                if(select2 < 0 || select2 > (quantConjuntos - 1)){
+                    printf("\nConjunto invalido.");
+                }
+            }
+            free = quantConjuntos;
+            quantConjuntos++;
+            intersecM(matriz, select, select2, free);
+            bubbleSort(matriz,free);
+            printf("\nO novo conjunto foi criado na posicao %d",free);
             break;
 
         case 6 : //mostrar um conjunto
@@ -179,6 +319,7 @@ int main(){
                     printf("\nConjunto invalido.");
                 }
             }
+            printf("\nConjunto %d -> ",select);
             mostraConjunto(matriz,select);
             break;
 
@@ -187,6 +328,7 @@ int main(){
                 printf("\nNao ha conjuntos para serem mostrados");
                 break;
             }
+            printf("\nTemos %d conjuntos:\n",quantConjuntos);
             mostraTodos(matriz,quantConjuntos);
             break;
 
