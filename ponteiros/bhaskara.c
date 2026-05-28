@@ -2,10 +2,15 @@
 #include <math.h>
 
 void bhaskara(int a, int b, int c, double *x1, double *x2){
-    *x1 = -b + sqrt((b*b) - (4.0*a*c)) / (2.0*a);
-    *x2 = -b - sqrt((b*b) - (4.0*a*c)) / (2.0*a);
+    int delta = (b * b) - (4 * a * c);
+    if (delta < 0) {
+        *x1 = 0;
+        *x2 = 0;
+        return;
+    }
+    *x1 = (-b + sqrt(delta)) / (2 * a);
+    *x2 = (-b - sqrt(delta)) / (2 * a);
 }
-
 
 int main(){
     int a,b,c;
