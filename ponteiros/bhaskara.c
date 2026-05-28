@@ -2,8 +2,8 @@
 #include <math.h>
 
 void bhaskara(int a, int b, int c, double *x1, double *x2){
-    *x1 = -b + sqrt((b*b) - (4.0*a*c)) / 2.0*a;
-    *x2 = -b - sqrt((b*b) - (4.0*a*c)) / 2.0*a;
+    *x1 = -b + sqrt((b*b) - (4.0*a*c)) / (2.0*a);
+    *x2 = -b - sqrt((b*b) - (4.0*a*c)) / (2.0*a);
 }
 
 
