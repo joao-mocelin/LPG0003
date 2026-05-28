@@ -1,0 +1,48 @@
+Este repositório serve para acompanhar o progresso dos conteúdos e avaliações da disciplina **LPG0003 – Linguagem de Programação**, ministrada pelo **Prof. Rui Jorge Tramontin Junior** no semestre **2026/1**.
+
+---
+
+##  Ementa e Conteúdo Programático
+
+### 1. Conceitos Básicos e Estruturas de Controle
+- [x] Revisão dos conceitos de Algoritmos
+- [x] Básico da Linguagem C
+- [x] Estruturas de seleção (condicionais)
+- [x] Estruturas de repetição
+
+### 2. Funções e Modularização
+- [x] Funções (Conceitos e declaração)
+- [x] Passagem de parâmetros
+- [x] Funções recursivas
+
+### 3. Estruturas de Dados Homogêneas e Strings
+- [x] Vetores e Matrizes
+- [x] Algoritmos de busca e de ordenação
+- [x] Manipulação de Cadeias de Caracteres (strings)
+- [x] Algoritmos típicos de strings
+- [x] Processamento de texto caractere a caractere
+- [x] Funções da biblioteca `string.h`
+
+### 4. Ponteiros e Alocação Dinâmica
+- [x] Ponteiros: Conceitos e declaração
+- [x] Passagem de parâmetros por referência
+- [ ] Aritmética de ponteiros
+- [ ] Alocação dinâmica de memória (e realocação)
+- [ ] Processamento de strings com ponteiros
+- [ ] Vetores de ponteiros
+- [ ] Ponteiros para ponteiros
+- [ ] Alocação dinâmica de matrizes e de vetores de strings
+
+### 5. Tipos Estruturados (Structs)
+- [ ] Conceitos e declaração de estruturas
+- [ ] Vetores de estruturas
+- [ ] Parâmetros de funções de tipo estruturado
+- [ ] Ponteiros para estruturas
+- [ ] Estruturas dentro de estruturas (aninhadas)
+
+### 6. Manipulação de Arquivos
+- [ ] Conceitos básicos de arquivos
+- [ ] Arquivos Texto
+- [ ] Arquivos Binários
+
+---
