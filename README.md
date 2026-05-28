@@ -26,7 +26,7 @@ Este repositório serve para acompanhar o progresso dos conteúdos e avaliaçõe
 ### 4. Ponteiros e Alocação Dinâmica
 - [x] Ponteiros: Conceitos e declaração
 - [x] Passagem de parâmetros por referência
-- [ ] Aritmética de ponteiros
+- [x] Aritmética de ponteiros
 - [ ] Alocação dinâmica de memória (e realocação)
 - [ ] Processamento de strings com ponteiros
 - [ ] Vetores de ponteiros
