@@ -27,11 +27,11 @@ Este repositório serve para acompanhar o progresso dos conteúdos e avaliaçõe
 - [x] Ponteiros: Conceitos e declaração
 - [x] Passagem de parâmetros por referência
 - [x] Aritmética de ponteiros
-- [ ] Alocação dinâmica de memória (e realocação)
-- [ ] Processamento de strings com ponteiros
-- [ ] Vetores de ponteiros
-- [ ] Ponteiros para ponteiros
-- [ ] Alocação dinâmica de matrizes e de vetores de strings
+- [x] Alocação dinâmica de memória (e realocação)
+- [x] Processamento de strings com ponteiros
+- [x] Vetores de ponteiros
+- [x] Ponteiros para ponteiros
+- [x] Alocação dinâmica de matrizes e de vetores de strings
 
 ### 5. Tipos Estruturados (Structs)
 - [ ] Conceitos e declaração de estruturas
