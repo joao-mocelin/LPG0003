@@ -24,9 +24,24 @@ struct Evento
     char local[51];
 };
 
+void mostra_eventos(struct Evento *v,int nv){
+    if(nv == 0){
+        printf("\nNao ha eventos cadastrados.\n");
+        return;
+    }
+    for(int i = 0; i < nv; i++){
+        printf("\nData: %02d %02d %04d", v[i].data_evento.dia, v[i].data_evento.mes, v[i].data_evento.ano);
+        printf("\nHorario de Inicio: %02d:%02d", v[i].horario_inicio.hora, v[i].horario_inicio.minuto);
+        printf("\nHorario de Termino: %02d:%02d", v[i].horario_fim.hora, v[i].horario_fim.minuto);
+        printf("\nDescricao: %s", v[i].descricao);
+        printf("\nLocal: %s\n", v[i].local);
+    }
+    return;
+}
+
 int main(){
     struct Evento *v = NULL;
-    int n = 0, opcao = -1;
+    int n = 0, option = -1;
     FILE *arquivo;
     arquivo = fopen("eventos.txt","rt");
     if(arquivo == NULL){
@@ -90,14 +105,14 @@ int main(){
                 else{
                     printf("%d eventos encontrados e carregados.\n", n);
                 }
-                Sleep(1500);
+                Sleep(500);
                 system("cls");
             }
         }
         else{ //caso n = 0
             fclose(arquivo);
             printf("Agenda vazia (0 eventos encontrados).\n");
-            Sleep(1500);
+            Sleep(500);
             system("cls");
         }
 	}
@@ -105,5 +120,60 @@ int main(){
     //carga de arquivo e leitura de dados ok.
     //prosseguir para menu seletor e funcionalidades.
 
+    while(option != 6){
+        printf("\n------------------------------");
+        printf("\n\t Agenda de Eventos\n");
+        printf("\n(1) - Cadastrar novo eventos.");
+        printf("\n(2) - Mostrar Eventos.");
+        printf("\n(3) - Pesquisar por data.");
+        printf("\n(4) - Pesquisar por descricao.");
+        printf("\n(5) - Remover Evento.");
+        printf("\n(6) - Sair.\n");
+        printf("-> ");
+        scanf("%d",&option);
+        if(!(option > 0 && option < 7)){
+            printf("\nValor invalido! Favor selecionar uma opcao valida.");
+            Sleep(2000);
+            system("cls");
+            continue;
+        }
+
+        switch (option) {
+            case 1:
+                printf("\n[Cadastrar novo evento]\n");
+                // Chame sua função ou coloque o código de cadastro aqui
+                break;
+
+            case 2:
+                printf("\n[Mostrar Eventos]\n");
+                mostra_eventos(v,n);
+                system("PAUSE");
+                break;
+
+            case 3:
+                printf("\n[Pesquisar por data]\n");
+                // Código de busca por data
+                break;
+
+            case 4:
+                printf("\n[Pesquisar por descricao]\n");
+                // Código de busca por descrição
+                break;
+
+            case 5:
+                printf("\n[Remover Evento]\n");
+                // Código para deletar um evento
+                break;
+
+            case 6:
+                printf("\nSaindo do programa... Ate logo!\n");
+                break;
+        }
+
+        Sleep(500); 
+        system("cls");
+    }
+
+    free(v);
     return 0;
 }
