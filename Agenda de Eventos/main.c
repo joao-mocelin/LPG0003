@@ -119,6 +119,7 @@ int compara_data(struct Data x, struct Data y){
             }
         }
     }
+    return 1;
 }
 
 int compara_horario(struct Horario x, struct Horario y){
