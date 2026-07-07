@@ -93,6 +93,79 @@ int valida_horario(struct Horario x){
     return 1;
 }
 
+int compara_data(struct Data x, struct Data y){
+    if(x.ano < y.ano){
+        return 1; //x vem antes de y
+    }
+    if(x.ano > y.ano){
+        return 0; //y vem antes de x
+    }
+    if(x.ano == y.ano){
+        if(x.mes < y.mes){
+            return 1; //x vem antes de y
+        }
+        if(x.mes > y.mes){
+            return 0; //y vem antes de x
+        }
+        if(x.mes == y.mes){
+            if(x.dia < y.dia){
+                return 1; //x vem antes de y 
+            }
+            if(x.dia > y.dia){
+                return 0; //y vem antes de x
+            }
+            if(x.dia == y.dia){
+                return 2;// são no mesmo dia
+            }
+        }
+    }
+}
+
+int compara_horario(struct Horario x, struct Horario y){
+    if(x.hora < y.hora){
+        return 1; //x vem antes de y
+    }
+    if(x.hora > y.hora){
+        return 0; //y vem antes de x
+    }
+    if(x.minuto <= y.minuto){
+        return 1; //x vem antes de y
+    }
+    if(x.minuto > y.minuto){
+        return 0; //y vem antes de x
+    }
+    return 1;
+}
+
+struct Evento *ordena_data(struct Evento *v, int n){
+    if (n <= 1) return v; // n precisa ser ordenado
+    int swap;
+    struct Evento aux;
+    for(int i = 0; i < n; i++){
+        swap = 0;
+        for(int j = i + 1; j < n; j++){
+            if(compara_data(v[j].data_evento,v[j+1].data_evento) == 0){
+            aux = v[j];
+            v[j] = v[j+1];
+            v[j+1] = aux;
+            swap = 1;
+            }
+            else if(compara_data(v[j].data_evento,v[j+1].data_evento) == 2){
+                if(compara_horario(v[j].horario_inicio,v[j+1].horario_inicio) == 0){
+                    aux = v[j];
+                    v[j] = v[j+1];
+                    v[j+1] = aux;
+                    swap = 1;
+                }
+            }
+        }
+        if(swap == 0){
+            break;
+        }
+    }
+    return v;
+}
+
 struct Evento* cadastro(struct Evento *v,int *nv){
     struct Evento *temp = realloc(v,sizeof(struct Evento) * (*nv + 1));
     if(temp == NULL){
@@ -228,7 +301,7 @@ int main(){
     while(option != 6){
         printf("\n------------------------------");
         printf("\n\t Agenda de Eventos\n");
-        printf("\n(1) - Cadastrar novo eventos.");
+        printf("\n(1) - Cadastrar novo evento.");
         printf("\n(2) - Mostrar Eventos.");
         printf("\n(3) - Pesquisar por data.");
         printf("\n(4) - Pesquisar por descricao.");
@@ -248,6 +321,7 @@ int main(){
                 printf("\n[Cadastrar novo evento]\n");
                 v = cadastro(v,&n);
                 printf("\n");
+                v = ordena_data(v,n);
                 system("pause");
                 break;
 
