@@ -122,29 +122,51 @@ int compara_data(struct Data x, struct Data y){
     return 1;
 }
 
+int horario_to_minutes(struct Horario x){
+    int minuto = x.hora * 60 + x.minuto;
+    return minuto;
+}
+
 int compara_horario(struct Horario x, struct Horario y){
-    if(x.hora < y.hora){
-        return 1; //x vem antes de y
+    int min_x = horario_to_minutes(x);
+    int min_y = horario_to_minutes(y);
+
+    if (min_x < min_y) {
+        return 1; // x vem antes de y
     }
-    if(x.hora > y.hora){
-        return 0; //y vem antes de x
+    return 0; // y vem antes de x (ou são iguais)
+}
+
+int sobrepoe_horario(struct Evento *v, int n, struct Data nova_data, struct Horario novo_ini, struct Horario novo_fim) {
+    int nov_ini_min = horario_to_minutes(novo_ini);
+    int nov_fim_min = horario_to_minutes(novo_fim);
+
+    for (int i = 0; i < n; i++) {
+        if (v[i].data_evento.dia == nova_data.dia &&
+            v[i].data_evento.mes == nova_data.mes &&
+            v[i].data_evento.ano == nova_data.ano) {
+
+            int ex_ini_min = horario_to_minutes(v[i].horario_inicio);
+            int ex_fim_min = horario_to_minutes(v[i].horario_fim);
+
+            if (nov_ini_min < ex_fim_min && nov_fim_min > ex_ini_min) {
+                printf("\nERRO: O horario coincide com o evento: \"%s\" (%02d:%02d ate %02d:%02d).\n",
+                       v[i].descricao, v[i].horario_inicio.hora, v[i].horario_inicio.minuto,
+                       v[i].horario_fim.hora, v[i].horario_fim.minuto);
+                return 1; // Encontrou sobreposição
+            }
+        }
     }
-    if(x.minuto <= y.minuto){
-        return 1; //x vem antes de y
-    }
-    if(x.minuto > y.minuto){
-        return 0; //y vem antes de x
-    }
-    return 1;
+    return 0;
 }
 
 struct Evento *ordena_data(struct Evento *v, int n){
     if (n <= 1) return v; // n precisa ser ordenado
     int swap;
     struct Evento aux;
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n - 1; i++){
         swap = 0;
-        for(int j = i + 1; j < n; j++){
+        for(int j = 0; j < n - i - 1; j++){
             if(compara_data(v[j].data_evento,v[j+1].data_evento) == 0){
             aux = v[j];
             v[j] = v[j+1];
@@ -167,55 +189,89 @@ struct Evento *ordena_data(struct Evento *v, int n){
     return v;
 }
 
-struct Evento* cadastro(struct Evento *v,int *nv){
-    struct Evento *temp = realloc(v,sizeof(struct Evento) * (*nv + 1));
+struct Evento* cadastro(struct Evento *v, int *nv){
+    struct Data data_temp;
+    struct Horario ini_temp, fim_temp;
+    int valido;
+
+    do{
+        printf("\nDigite dia mes e ano do novo evento (DD MM AAAA):\n");
+        scanf("%d %d %d", &data_temp.dia, &data_temp.mes, &data_temp.ano);
+    } while (valida_data(data_temp) != 1);
+
+    do{
+        printf("\nDigite horario de inicio do evento (HH MM):\n");
+        scanf("%d %d", &ini_temp.hora, &ini_temp.minuto);
+        valido = valida_horario(ini_temp);
+        if (valido == 0) {
+            printf("Erro: Horario de inicio invalido!\n");
+        }
+    } while(valido != 1);
+
+    do{
+        printf("\nDigite horario de termino do evento (HH MM):\n");
+        scanf("%d %d", &fim_temp.hora, &fim_temp.minuto);
+        
+        if (valida_horario(fim_temp) == 0) {
+            printf("Erro: Horario de termino invalido!\n");
+            valido = 0;
+            continue;
+        }
+        
+        if (horario_to_minutes(fim_temp) <= horario_to_minutes(ini_temp)){
+            printf("Erro: O horario de termino nao pode ser menor ou igual ao de inicio!\n");
+            valido = 0;
+            continue;
+        }
+        
+        valido = 1;
+    } while (valido != 1);
+
+    if (sobrepoe_horario(v, *nv, data_temp, ini_temp, fim_temp) == 1) {
+        printf("\nCadastro cancelado devido ao conflito de horarios.\n");
+        return v;
+    }
+
+    struct Evento *temp = realloc(v, sizeof(struct Evento) * (*nv + 1));
     if(temp == NULL){
         printf("\nNao foi possivel realocar o vetor de eventos.\nRetornando o vetor original. . .");
         return v;
     }
     v = temp;
-    struct Data data_temp;
-    do{
-        printf("\nDigite dia mes e ano do novo evento (DD MM AAAA):\n");
-        scanf("%d %d %d",&data_temp.dia,&data_temp.mes,&data_temp.ano);
-    }while (valida_data(data_temp) != 1);
-    v[*nv].data_evento.dia = data_temp.dia;
-    v[*nv].data_evento.mes = data_temp.mes;
-    v[*nv].data_evento.ano = data_temp.ano;
-    struct Horario horario_temp;
-    do{
-    printf("\nDigite horario de inicio do evento (HH MM):\n");
-    scanf("%d %d",&horario_temp.hora,&horario_temp.minuto);
-    }while(valida_horario(horario_temp) != 1);
-    v[*nv].horario_inicio.hora = horario_temp.hora;
-    v[*nv].horario_inicio.minuto = horario_temp.minuto;
-    int valido = 0;
 
-    do{
-        printf("\nDigite horario de termino do evento (HH MM):\n");
-        scanf("%d %d", &horario_temp.hora, &horario_temp.minuto);
-        if (horario_temp.hora < v[*nv].horario_inicio.hora){
-            printf("Erro: O horario de termino nao pode ser menor que o de inicio!\n");
-            valido = 0;
-            continue;
-        }
-        if(horario_temp.hora == v[*nv].horario_inicio.hora && horario_temp.minuto <= v[*nv].horario_inicio.minuto){
-            printf("Erro: O horario de termino nao pode ser menor que o de inicio!\n");
-            valido = 0;
-            continue;
-        }
-        valido = valida_horario(horario_temp);
-    }while (valido != 1);
-    v[*nv].horario_fim.hora = horario_temp.hora;
-    v[*nv].horario_fim.minuto = horario_temp.minuto;
-    
+    v[*nv].data_evento = data_temp;
+    v[*nv].horario_inicio = ini_temp;
+    v[*nv].horario_fim = fim_temp;
+
     printf("\nDigite a descricao do evento (max 50 caracteres):\n");
-    scanf(" %50[^\n]",v[*nv].descricao);
+    scanf(" %50[^\n]", v[*nv].descricao); // Lembra de testar com ou sem o \n final dependendo do buffer
+    
     printf("\nDigite o local do evento (max 50 caracteres):\n");
-    scanf(" %50[^\n]",v[*nv].local);
+    scanf(" %50[^\n]", v[*nv].local);
+
     (*nv)++;
-    printf("\nEvento cadastrado com sucesso.");
+
+    v = ordena_data(v, *nv); 
+    
+    printf("\nEvento cadastrado com sucesso e agenda ordenada.");
     return v;
+}
+
+void pesquisa_data(struct Data data, struct Evento *v, int n){
+    int existe = 0;
+    for(int i = 0; i < n; i++){
+        if(compara_data(data,v[i].data_evento) == 2){
+            printf("\nData: %02d %02d %04d", v[i].data_evento.dia, v[i].data_evento.mes, v[i].data_evento.ano);
+            printf("\nHorario de Inicio: %02d:%02d", v[i].horario_inicio.hora, v[i].horario_inicio.minuto);
+            printf("\nHorario de Termino: %02d:%02d", v[i].horario_fim.hora, v[i].horario_fim.minuto);
+            printf("\nDescricao: %s", v[i].descricao);
+            printf("\nLocal: %s\n", v[i].local);
+            existe = 1;
+        }
+    }
+    if(existe == 0){
+        printf("\nNao ha eventos nesta data.");
+    }
 }
 
 int main(){
@@ -318,11 +374,10 @@ int main(){
         }
 
         switch (option) {
-            case 1: //OK, falta ordenar vetor e impedir sobreposição
+            case 1: //OK
                 printf("\n[Cadastrar novo evento]\n");
                 v = cadastro(v,&n);
                 printf("\n");
-                v = ordena_data(v,n);
                 system("pause");
                 break;
 
@@ -333,10 +388,21 @@ int main(){
                 system("PAUSE");
                 break;
 
-            case 3:
+            case 3:{
                 printf("\n[Pesquisar por data]\n");
-                // Código de busca por data
+                struct Data data_busca; // Agora o compilador aceita!
+                
+                do {
+                    printf("Digite a data que deseja pesquisar (DD MM AAAA): ");
+                    scanf("%d %d %d", &data_busca.dia, &data_busca.mes, &data_busca.ano);
+                } while (valida_data(data_busca) != 1);
+
+                pesquisa_data(data_busca, v, n);
+                
+                printf("\n");
+                system("pause");
                 break;
+            }
 
             case 4:
                 printf("\n[Pesquisar por descricao]\n");
