@@ -51,6 +51,48 @@ void salva_arquivo(struct Evento *v, FILE *file, int nv){
     printf("\nDados salvos com sucesso em 'eventos.txt'!\n");
 }
 
+int eh_bissexto( int ano ){
+	return ( ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0 ;
+}
+
+int valida_data( struct Data x ){
+	if( x.ano < 2000 || x.ano > 2100 ){ // Arbitr�rio... pode ser mudado ou omitido.
+		printf("Erro: ano deve estar entre 2000 e 2100!\n");
+		return 0;
+	}
+	
+	if( x.mes < 1 || x.mes > 12 ){
+		printf("Erro: mes deve estar entre 1 e 12!\n");
+		return 0;
+	}
+		
+	int max, meses[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	if( x.mes == 2 && eh_bissexto( x.ano ) )
+		max = 29;
+	else
+		max = meses[ x.mes-1 ];
+		
+	if( x.dia < 1 || x.dia > max ){
+		printf("Erro: dia deve estar entre 1 e %d!\n", max);
+		return 0;
+	}
+		
+	return 1;
+	
+}
+
+int valida_horario(struct Horario x){
+    if(x.hora < 0 || x.hora > 23){
+        printf("\nInsira um horario de 0 e 23 hrs.");
+        return 0;
+    }
+    if(x.minuto < 0 || x.minuto > 59){
+        printf("\nInsira um horario de 0 e 59 min.");
+        return 0;
+    }
+    return 1;
+}
+
 struct Evento* cadastro(struct Evento *v,int *nv){
     struct Evento *temp = realloc(v,sizeof(struct Evento) * (*nv + 1));
     if(temp == NULL){
@@ -58,12 +100,41 @@ struct Evento* cadastro(struct Evento *v,int *nv){
         return v;
     }
     v = temp;
-    printf("\nDigite dia mes e ano do novo evento (DD MM AAAA):\n");
-    scanf("%d %d %d",&v[*nv].data_evento.dia,&v[*nv].data_evento.mes,&v[*nv].data_evento.ano);
+    struct Data data_temp;
+    do{
+        printf("\nDigite dia mes e ano do novo evento (DD MM AAAA):\n");
+        scanf("%d %d %d",&data_temp.dia,&data_temp.mes,&data_temp.ano);
+    }while (valida_data(data_temp) != 1);
+    v[*nv].data_evento.dia = data_temp.dia;
+    v[*nv].data_evento.mes = data_temp.mes;
+    v[*nv].data_evento.ano = data_temp.ano;
+    struct Horario horario_temp;
+    do{
     printf("\nDigite horario de inicio do evento (HH MM):\n");
-    scanf("%d %d",&v[*nv].horario_inicio.hora,&v[*nv].horario_inicio.minuto);
-    printf("\nDigite horario de termino do evento (HH MM):\n");
-    scanf("%d %d",&v[*nv].horario_fim.hora,&v[*nv].horario_fim.minuto);
+    scanf("%d %d",&horario_temp.hora,&horario_temp.minuto);
+    }while(valida_horario(horario_temp) != 1);
+    v[*nv].horario_inicio.hora = horario_temp.hora;
+    v[*nv].horario_inicio.minuto = horario_temp.minuto;
+    int valido = 0;
+
+    do{
+        printf("\nDigite horario de termino do evento (HH MM):\n");
+        scanf("%d %d", &horario_temp.hora, &horario_temp.minuto);
+        if (horario_temp.hora < v[*nv].horario_inicio.hora){
+            printf("Erro: O horario de termino nao pode ser menor que o de inicio!\n");
+            valido = 0;
+            continue;
+        }
+        if(horario_temp.hora == v[*nv].horario_inicio.hora && horario_temp.minuto <= v[*nv].horario_inicio.minuto){
+            printf("Erro: O horario de termino nao pode ser menor que o de inicio!\n");
+            valido = 0;
+            continue;
+        }
+        valido = valida_horario(horario_temp);
+    }while (valido != 1);
+    v[*nv].horario_fim.hora = horario_temp.hora;
+    v[*nv].horario_fim.minuto = horario_temp.minuto;
+    
     printf("\nDigite a descricao do evento (max 50 caracteres):\n");
     scanf(" %50[^\n]",v[*nv].descricao);
     printf("\nDigite o local do evento (max 50 caracteres):\n");
@@ -173,7 +244,7 @@ int main(){
         }
 
         switch (option) {
-            case 1: //OK, implementar validação de data, horario.
+            case 1: //OK, falta ordenar vetor e impedir sobreposição
                 printf("\n[Cadastrar novo evento]\n");
                 v = cadastro(v,&n);
                 printf("\n");
