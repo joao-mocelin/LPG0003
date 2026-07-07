@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <string.h>
 
 struct Data
 {
@@ -274,6 +275,24 @@ void pesquisa_data(struct Data data, struct Evento *v, int n){
     }
 }
 
+void pesquisa_descricao(struct Evento *v, int n, char *descricao){
+    char *ponteiro;
+    int existe = 0;
+    for(int i = 0; i < n; i++){
+        ponteiro = strstr(v[i].descricao, descricao);
+        if(ponteiro != NULL){
+            printf("\nData: %02d %02d %04d", v[i].data_evento.dia, v[i].data_evento.mes, v[i].data_evento.ano);
+            printf("\nHorario de Inicio: %02d:%02d", v[i].horario_inicio.hora, v[i].horario_inicio.minuto);
+            printf("\nHorario de Termino: %02d:%02d", v[i].horario_fim.hora, v[i].horario_fim.minuto);
+            printf("\nDescricao: %s", v[i].descricao);
+            printf("\nLocal: %s\n", v[i].local);
+            existe = 1;
+        }
+    }
+    if(existe == 0){
+        printf("\nNao ha eventos com esta descricao.");
+    }
+}
 int main(){
     struct Evento *v = NULL;
     int n = 0, option = -1;
@@ -404,10 +423,16 @@ int main(){
                 break;
             }
 
-            case 4:
+            case 4:{
                 printf("\n[Pesquisar por descricao]\n");
-                // Código de busca por descrição
+                char termo_busca[51];
+                printf("Digite o termo ou palavra-chave que deseja buscar: ");
+                scanf(" %50[^\n]", termo_busca); 
+                pesquisa_descricao(v, n, termo_busca);
+                printf("\n");
+                system("pause");
                 break;
+            }
 
             case 5:
                 printf("\n[Remover Evento]\n");
