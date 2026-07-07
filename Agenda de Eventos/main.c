@@ -275,6 +275,44 @@ void pesquisa_data(struct Data data, struct Evento *v, int n){
     }
 }
 
+struct Evento *remover_evento(struct Evento *v, int *nv){
+    int evento;
+    if(*nv == 0){
+        printf("\nNao ha eventos para serem removidos.");
+        return v;
+    }
+    for(int i = 0; i < *nv; i++){
+        printf("\n[%d] Data: %02d %02d %04d",i , v[i].data_evento.dia, v[i].data_evento.mes, v[i].data_evento.ano);
+        printf("\nHorario de Inicio: %02d:%02d", v[i].horario_inicio.hora, v[i].horario_inicio.minuto);
+        printf("\nHorario de Termino: %02d:%02d", v[i].horario_fim.hora, v[i].horario_fim.minuto);
+        printf("\nDescricao: %s", v[i].descricao);
+        printf("\nLocal: %s\n", v[i].local);
+    }
+    printf("\n Escolha um evento para ser removido:\n");
+    scanf("%d",&evento);
+    if(evento < 0 || evento >= *nv){
+        printf("\nEscolha invalida.");
+        return v;
+    }
+    for(int i = evento; i < (*nv) - 1; i++){
+        v[i] = v[i+1];
+    }
+    (*nv)--;
+    if(*nv == 0){
+        free(v);
+        printf("\nUltimo evento removido. A agenda agora esta vazia.\n");
+        return NULL;
+    }
+    struct Evento *temp = realloc(v, sizeof(struct Evento) * (*nv));
+    if(temp == NULL){
+        printf("\nFalha ao reduzir tamanho da agenda.");
+        return v;
+    }
+    v = temp;
+    printf("\nEvento removido com sucesso.\n");
+    return v;
+}
+
 void pesquisa_descricao(struct Evento *v, int n, char *descricao){
     char *ponteiro;
     int existe = 0;
@@ -293,6 +331,7 @@ void pesquisa_descricao(struct Evento *v, int n, char *descricao){
         printf("\nNao ha eventos com esta descricao.");
     }
 }
+
 int main(){
     struct Evento *v = NULL;
     int n = 0, option = -1;
@@ -300,7 +339,7 @@ int main(){
     arquivo = fopen("eventos.txt","rt");
     if(arquivo == NULL){
         printf("\nAgenda nao encontrada.");
-        Sleep(1500);
+        Sleep(500);
         system("CLS");
     }
     else{
@@ -308,7 +347,7 @@ int main(){
             printf("\nErro: Arquivo corrompido (falha ao ler a quantidade de eventos).\n");
             n = 0;
             fclose(arquivo);
-            Sleep(2000);
+            Sleep(500);
             system("CLS");
         }
         else if(n > 0){
@@ -343,13 +382,13 @@ int main(){
                 free(v);
                 v = NULL;
                 n = 0;
-                Sleep(200);
+                Sleep(300);
                 printf("\n.");
-                Sleep(600);
+                Sleep(300);
                 printf("\n. .");
-                Sleep(600);
+                Sleep(300);
                 printf("\n. . .");
-                Sleep(400);
+                Sleep(300);
                 system("cls");
             }
             else{
@@ -387,7 +426,7 @@ int main(){
         scanf("%d",&option);
         if(!(option > 0 && option < 7)){
             printf("\nValor invalido! Favor selecionar uma opcao valida.");
-            Sleep(2000);
+            Sleep(1000);
             system("cls");
             continue;
         }
@@ -408,6 +447,11 @@ int main(){
                 break;
 
             case 3:{
+                if(n == 0){
+                    printf("\nNao ha eventos cadastrados.\n");
+                    system("pause");
+                    break;
+                }
                 printf("\n[Pesquisar por data]\n");
                 struct Data data_busca; // Agora o compilador aceita!
                 
@@ -424,6 +468,11 @@ int main(){
             }
 
             case 4:{
+                if(n == 0){
+                    printf("\nNao ha eventos cadastrados.\n");
+                    system("pause");
+                    break;
+                }
                 printf("\n[Pesquisar por descricao]\n");
                 char termo_busca[51];
                 printf("Digite o termo ou palavra-chave que deseja buscar: ");
@@ -435,8 +484,11 @@ int main(){
             }
 
             case 5:
+                system("cls");
                 printf("\n[Remover Evento]\n");
-                // Código para deletar um evento
+                v = remover_evento(v,&n);
+                printf("\n");
+                system("pause");
                 break;
 
             case 6: //OK.
