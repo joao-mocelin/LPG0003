@@ -204,9 +204,6 @@ struct Evento* cadastro(struct Evento *v, int *nv){
         printf("\nDigite horario de inicio do evento (HH MM):\n");
         scanf("%d %d", &ini_temp.hora, &ini_temp.minuto);
         valido = valida_horario(ini_temp);
-        if (valido == 0) {
-            printf("Erro: Horario de inicio invalido!\n");
-        }
     } while(valido != 1);
 
     do{
@@ -214,17 +211,15 @@ struct Evento* cadastro(struct Evento *v, int *nv){
         scanf("%d %d", &fim_temp.hora, &fim_temp.minuto);
         
         if (valida_horario(fim_temp) == 0) {
-            printf("Erro: Horario de termino invalido!\n");
             valido = 0;
             continue;
         }
         
         if (horario_to_minutes(fim_temp) <= horario_to_minutes(ini_temp)){
-            printf("Erro: O horario de termino nao pode ser menor ou igual ao de inicio!\n");
+            printf("\nErro: O horario de termino nao pode ser menor ou igual ao de inicio!\n");
             valido = 0;
             continue;
         }
-        
         valido = 1;
     } while (valido != 1);
 
@@ -245,10 +240,12 @@ struct Evento* cadastro(struct Evento *v, int *nv){
     v[*nv].horario_fim = fim_temp;
 
     printf("\nDigite a descricao do evento (max 50 caracteres):\n");
-    scanf(" %50[^\n]", v[*nv].descricao); // Lembra de testar com ou sem o \n final dependendo do buffer
+    scanf(" %50[^\n]", v[*nv].descricao);
+    while (getchar() != '\n'); // Consome o lixo do buffer caso tenha mais de 50 caracteres
     
     printf("\nDigite o local do evento (max 50 caracteres):\n");
     scanf(" %50[^\n]", v[*nv].local);
+    while (getchar() != '\n');
 
     (*nv)++;
 
@@ -424,6 +421,7 @@ int main(){
         printf("\n(6) - Sair.\n");
         printf("-> ");
         scanf("%d",&option);
+        while (getchar() != '\n'); // Consome o lixo do buffer caso nao seja numeral
         if(!(option > 0 && option < 7)){
             printf("\nValor invalido! Favor selecionar uma opcao valida.");
             Sleep(1000);
