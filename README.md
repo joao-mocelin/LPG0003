@@ -34,15 +34,15 @@ Este repositório serve para acompanhar o progresso dos conteúdos e avaliaçõe
 - [x] Alocação dinâmica de matrizes e de vetores de strings
 
 ### 5. Tipos Estruturados (Structs)
-- [ ] Conceitos e declaração de estruturas
-- [ ] Vetores de estruturas
-- [ ] Parâmetros de funções de tipo estruturado
-- [ ] Ponteiros para estruturas
-- [ ] Estruturas dentro de estruturas (aninhadas)
+- [x] Conceitos e declaração de estruturas
+- [x] Vetores de estruturas
+- [x] Parâmetros de funções de tipo estruturado
+- [x] Ponteiros para estruturas
+- [x] Estruturas dentro de estruturas (aninhadas)
 
 ### 6. Manipulação de Arquivos
-- [ ] Conceitos básicos de arquivos
-- [ ] Arquivos Texto
-- [ ] Arquivos Binários
+- [x] Conceitos básicos de arquivos
+- [x] Arquivos Texto
+- [x] Arquivos Binários
 
 ---
